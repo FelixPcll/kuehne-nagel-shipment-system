@@ -1,0 +1,16 @@
+$baseColor: rgb(0, 43, 85);
+$accentColor: rgb(86, 183, 233);
+$washColor: rgb(227, 239, 245);
+
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  color: $baseColor;
+}
+
+.main-container {
+  width: 80%;
+  margin: auto;
+}
