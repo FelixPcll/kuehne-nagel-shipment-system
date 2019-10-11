@@ -27,7 +27,7 @@ import axios from "axios";
 export default {
   data: () => {
     return {
-      trackRef: null,
+      trackRef: "",
       item: {
         from_coutry: " ",
         to_country: " ",
@@ -38,11 +38,18 @@ export default {
 
   methods: {
     search() {
-      let path = `http://localhost:8000/api/v0.1/shipment/?track_ref=${this.trackRef}`;
+      this.trackRef = this.trackRef.toUpperCase();
+
+      if (this.trackRef.length == 0) {
+        return;
+      }
+
+      let path = `http://localhost:8000/api/v0.1/shipment/${this.trackRef}`;
       axios
         .get(path)
         .then(response => {
-          this.item = response.data[0];
+          console.log(response);
+          this.item = response.data;
           this.displayInfo();
         })
         .catch(e => {
@@ -55,9 +62,7 @@ export default {
 
       console.log(pkg);
     }
-  },
-
-  mounted() {}
+  }
 };
 </script>
 

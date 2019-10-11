@@ -1,6 +1,12 @@
-$baseColor: rgb(0, 43, 85);
-$accentColor: rgb(86, 183, 233);
-$washColor: rgb(227, 239, 245);
+$baseColor: #002b55;
+$accentColor: #56b7e9;
+$washColor: #e3eff5;
+$bgColor: #ffffff;
+$alertColor: #a30000;
+
+$title-size: 3.5em;
+$base-size: 1.2em;
+$accent-size: 1.6em;
 
 * {
   margin: 0%;
@@ -8,6 +14,17 @@ $washColor: rgb(227, 239, 245);
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
   color: $baseColor;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+button {
+  outline: none;
+  border: none;
 }
 
 .main-container {
