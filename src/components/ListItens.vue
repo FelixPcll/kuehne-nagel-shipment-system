@@ -9,13 +9,32 @@
     </div>
     <ul class="list">
       <li class="row" v-for="(item) in shipments" :key="item.track_ref">
-        <div class="track-ref prop body">{{ item.track_ref }}</div>
-        <div class="from-coutry prop body">{{ item.from_coutry }}</div>
-        <div class="to-coutry prop body">{{ item.to_country }}</div>
-        <div class="package-weight prop body">{{ item.package_weight }}</div>
+        <div class="track-ref prop body">
+          <div class="text-info">{{ item.track_ref }}</div>
+        </div>
+        <div class="from-coutry prop body">
+          <div v-if="item.is_deleted" class="text-info">{{ item.from_coutry }}</div>
+          <input v-else type="text" class="text-edit" v-model="item.from_coutry" />
+        </div>
+        <div class="to-coutry prop body">
+          <div v-if="item.is_deleted" class="text-info">{{ item.to_country }}</div>
+          <input v-else type="text" class="text-edit" v-model="item.to_country" />
+        </div>
+        <div class="package-weight prop body">
+          <div v-if="item.is_deleted" class="text-info">{{ item.package_weight }}</div>
+          <input v-else type="text" class="text-edit" v-model="item.package_weight" />
+        </div>
         <div class="options prop body">
-          <button @click="updateShipment(item)" class="btn update">Update</button>
-          <button @click="deleteShipment(item)" class="btn delete">Delete</button>
+          <div class="btn-holder">
+            <button
+              @click="updateBtn(item)"
+              class="btn update"
+            >{{ item.is_deleted?'Modify':'Save' }}</button>
+            <button
+              @click="deleteBtn(item)"
+              class="btn delete"
+            >{{ item.is_deleted?'Delete':'Cancel' }}</button>
+          </div>
         </div>
       </li>
     </ul>
@@ -44,6 +63,36 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+
+    updateBtn(item) {
+      if (item.is_deleted) {
+        if (this.shipments.some(shipment => !shipment.is_deleted)) {
+          alert(
+            "There's already one shipment modifying, please finish or cancel it first."
+          );
+          return;
+        } else {
+          item.is_deleted = !item.is_deleted;
+        }
+      } else {
+        item.track_ref = item.track_ref.toUpperCase();
+        if (this.validateItem(item)) {
+          this.updateShipment(item);
+        }
+      }
+    },
+
+    deleteBtn(item) {
+      if (item.is_deleted) {
+        this.deleteShipment(item);
+      } else {
+        this.getShipments();
+      }
+    },
+
+    validateItem(item) {
+      return true;
     },
 
     deleteShipment(item) {
@@ -81,7 +130,23 @@ export default {
     },
 
     updateShipment(item) {
-      console.log("Hello from Update");
+      if (confirm('Press "OK" to confirm the alterations on pakage.')) {
+        //console.log("Hello from Post");
+        item.is_deleted = !item.is_deleted;
+
+        let apiUrl = `http://localhost:8000/api/v0.1/shipment/${item.track_ref}/`;
+
+        axios
+          .put(apiUrl, item)
+          .then(response => {
+            console.log(response);
+            this.getShipments();
+          })
+          .catch(e => {
+            alert(e);
+            this.getShipments();
+          });
+      }
     }
   },
 
@@ -106,18 +171,26 @@ export default {
 
   .prop {
     display: inline-block;
-    padding-left: 4px;
+    cursor: default;
   }
   .head {
     padding-bottom: 15px;
     font-size: $base-size;
     color: $accentColor;
   }
-  .body {
+
+  li {
     border-top: 1px solid $baseColor;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  }
+
+  .body {
     height: 32px;
+
+    .text-info {
+      padding-left: 4px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
   }
 }
 
@@ -138,45 +211,67 @@ export default {
     width: 12%;
     padding-left: 0;
 
-    .btn {
-      cursor: pointer;
-      background: rgba($color: #000000, $alpha: 0);
-      border: none;
-      height: 99%;
-      width: 53px;
-      margin-right: 5px;
-      &:last-child {
-        margin-right: 0;
-      }
-
-      &.delete {
-        border: 1px solid $alertColor;
-        color: $alertColor;
-
-        &:hover {
-          border: none;
-          background: $alertColor;
-          color: $washColor;
+    .btn-holder {
+      height: 100%;
+      .btn {
+        cursor: pointer;
+        background: rgba($color: #000000, $alpha: 0);
+        width: 53px;
+        height: 24px;
+        margin-right: 5px;
+        margin-top: 3px;
+        //margin-bottom: 4px;
+        &:first-child {
+          margin-left: 5px;
         }
-        &:active {
-          background: $washColor;
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.delete {
+          border: 1px solid $alertColor;
           color: $alertColor;
+
+          &:hover {
+            border: none;
+            background: $alertColor;
+            color: $washColor;
+          }
+          &:active {
+            background: $washColor;
+            color: $alertColor;
+          }
         }
-      }
-      &.update {
-        border: 1px solid $baseColor;
-        color: $baseColor;
-        &:hover {
-          border: none;
-          background: $baseColor;
-          color: $washColor;
-        }
-        &:active {
-          background: $washColor;
+        &.update {
+          border: 1px solid $baseColor;
           color: $baseColor;
+          &:hover {
+            border: none;
+            background: $baseColor;
+            color: $washColor;
+          }
+          &:active {
+            background: $washColor;
+            color: $baseColor;
+          }
         }
       }
     }
+  }
+}
+
+.text-edit {
+  width: calc(100% - 10px);
+  height: 26px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding-left: 3px;
+  font-size: 16px;
+  border: 1px solid $baseColor;
+  background: rgba(0, 0, 0, 0);
+
+  &:focus {
+    border-color: $accentColor;
   }
 }
 </style>
