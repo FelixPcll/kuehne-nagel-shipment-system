@@ -5,7 +5,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import List from '@/views/List.vue'
 import Register from '@/views/Register.vue'
-import Retrive from '@/views/Retrive.vue'
+// import Retrieve from '@/views/Retrive.vue'
 
 Vue.use(Router)
 
@@ -27,11 +27,11 @@ export default new Router({
       path: '/list',
       name: 'list',
       component: List
-    },
-    {
+    }
+    /* {
       path: '/retrive',
       name: 'retrive',
-      component: Retrive
-    }
+      component: Retrieve
+    } */
   ]
 })

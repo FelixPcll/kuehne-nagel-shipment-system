@@ -1,7 +1,13 @@
 <template>
   <div class="card-holder">
     <div class="search">
-      <input type="text" placeholder="Insert the track code here..." v-model="trackRef" />
+      <input
+        type="text"
+        placeholder="Insert the track code here..."
+        maxlength="13"
+        v-model="trackRef"
+        @keyup="trackRef = trackRef.toUpperCase()"
+      />
       <button @click="search()">Search</button>
     </div>
     <div class="display-info">
@@ -22,47 +28,54 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  data: () => {
-    return {
-      trackRef: "",
-      item: {
-        from_coutry: " ",
-        to_country: " ",
-        package_weight: " "
-      }
-    };
-  },
+  data: () => ({
+    trackRef: '',
+    item: {
+      from_coutry: ' ',
+      to_country: ' ',
+      package_weight: ' ',
+    },
+  }),
 
   methods: {
     search() {
-      this.trackRef = this.trackRef.toUpperCase();
+      if (this.checkEnter()) {
+        const path = `http://localhost:8000/api/v0.1/shipment/${this.trackRef}`;
+        axios
+          .get(path)
+          .then((response) => {
+            // console.log(response);
+            this.item = response.data;
+            console.log(response);
+          })
+          .catch((e) => {
+            console.log(e);
 
-      if (this.trackRef.length == 0) {
-        return;
+            this.item = {
+              from_coutry: ' ',
+              to_country: ' ',
+              package_weight: ' ',
+            };
+
+            setTimeout(
+              () => {
+                alert(`No package information was found for the track code ${this.trackRef}. Please, verify if the code is right and if the problem persists, check if you can find your package in our List section.`);
+              }, 100,
+            );
+          });
       }
-
-      let path = `http://localhost:8000/api/v0.1/shipment/${this.trackRef}`;
-      axios
-        .get(path)
-        .then(response => {
-          console.log(response);
-          this.item = response.data;
-          this.displayInfo();
-        })
-        .catch(e => {
-          console.log(e);
-        });
     },
 
-    displayInfo() {
-      let pkg = this.item;
-
-      console.log(pkg);
-    }
-  }
+    checkEnter() {
+      if (this.trackRef.length == 0) {
+        return false;
+      }
+      return true;
+    },
+  },
 };
 </script>
 

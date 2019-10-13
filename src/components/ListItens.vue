@@ -1,7 +1,7 @@
 <template>
   <div class="list-item">
     <div class="container">
-      <div class="track-ref prop head">Track Code</div>
+      <div class="track-ref prop head">Track code</div>
       <div class="from-coutry prop head">Country of dispatch</div>
       <div class="to-coutry prop head">Country of destination</div>
       <div class="package-weight prop head">Wgt. (kg)</div>
@@ -13,27 +13,27 @@
           <div class="text-info">{{ item.track_ref }}</div>
         </div>
         <div class="from-coutry prop body">
-          <div v-if="item.is_deleted" class="text-info">{{ item.from_coutry }}</div>
+          <div v-if="item.is_up_to_date" class="text-info">{{ item.from_coutry }}</div>
           <input v-else type="text" class="text-edit" v-model="item.from_coutry" />
         </div>
         <div class="to-coutry prop body">
-          <div v-if="item.is_deleted" class="text-info">{{ item.to_country }}</div>
+          <div v-if="item.is_up_to_date" class="text-info">{{ item.to_country }}</div>
           <input v-else type="text" class="text-edit" v-model="item.to_country" />
         </div>
         <div class="package-weight prop body">
-          <div v-if="item.is_deleted" class="text-info">{{ item.package_weight }}</div>
-          <input v-else type="text" class="text-edit" v-model="item.package_weight" />
+          <div v-if="item.is_up_to_date" class="text-info">{{ item.package_weight }}</div>
+          <input v-else type="number" class="text-edit" v-model="item.package_weight" />
         </div>
         <div class="options prop body">
           <div class="btn-holder">
             <button
               @click="updateBtn(item)"
               class="btn update"
-            >{{ item.is_deleted?'Modify':'Save' }}</button>
+            >{{ item.is_up_to_date?'Modify':'Save' }}</button>
             <button
               @click="deleteBtn(item)"
               class="btn delete"
-            >{{ item.is_deleted?'Delete':'Cancel' }}</button>
+            >{{ item.is_up_to_date?'Delete':'Cancel' }}</button>
           </div>
         </div>
       </li>
@@ -42,38 +42,35 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  data: () => {
-    return {
-      shipments: []
-    };
-  },
+  data: () => ({
+    shipments: [],
+  }),
 
   methods: {
     getShipments() {
-      let apiUrl = "http://localhost:8000/api/v0.1/shipment/";
+      const apiUrl = 'http://localhost:8000/api/v0.1/shipment/';
 
       axios
         .get(apiUrl)
-        .then(response => {
+        .then((response) => {
           this.shipments = response.data;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         });
     },
 
     updateBtn(item) {
-      if (item.is_deleted) {
-        if (this.shipments.some(shipment => !shipment.is_deleted)) {
+      if (item.is_up_to_date) {
+        if (this.shipments.some(shipment => !shipment.is_up_to_date)) {
           alert(
-            "There's already one shipment modifying, please finish or cancel it first."
+            "There's already one shipment modifying, please finish or cancel it first.",
           );
-          return;
         } else {
-          item.is_deleted = !item.is_deleted;
+          item.is_up_to_date = !item.is_up_to_date;
         }
       } else {
         item.track_ref = item.track_ref.toUpperCase();
@@ -84,7 +81,7 @@ export default {
     },
 
     deleteBtn(item) {
-      if (item.is_deleted) {
+      if (item.is_up_to_date) {
         this.deleteShipment(item);
       } else {
         this.getShipments();
@@ -100,59 +97,60 @@ export default {
         () => {
           if (
             confirm(
-              `Press 'OK' if you're realy sure about deleting the shipment ${item.track_ref}`
+              `Press 'OK' if you're realy sure about deleting the shipment ${item.track_ref}`,
             )
           ) {
-            let apiUrl = `http://localhost:8000/api/v0.1/shipment/${item.track_ref}`;
+            const apiUrl = `http://localhost:8000/api/v0.1/shipment/${item.track_ref}`;
 
             axios
               .delete(apiUrl)
-              .then(response => {
+              .then((response) => {
+                console.log(response);
                 this.getShipments();
                 setTimeout(
                   () => {
                     alert(
-                      `The shipment ${item.track_ref} was successfully deleted.`
+                      `The shipment ${item.track_ref} was successfully deleted.`,
                     );
                   },
                   300,
-                  item
+                  item,
                 );
               })
-              .catch(e => {
+              .catch((e) => {
                 console.log(e);
               });
           }
         },
         300,
-        item
+        item,
       );
     },
 
     updateShipment(item) {
       if (confirm('Press "OK" to confirm the alterations on pakage.')) {
-        //console.log("Hello from Post");
-        item.is_deleted = !item.is_deleted;
+        // console.log("Hello from Post");
+        item.is_up_to_date = !item.is_up_to_date;
 
-        let apiUrl = `http://localhost:8000/api/v0.1/shipment/${item.track_ref}/`;
+        const apiUrl = `http://localhost:8000/api/v0.1/shipment/${item.track_ref}/`;
 
         axios
           .put(apiUrl, item)
-          .then(response => {
+          .then((response) => {
             console.log(response);
             this.getShipments();
           })
-          .catch(e => {
+          .catch((e) => {
             alert(e);
             this.getShipments();
           });
       }
-    }
+    },
   },
 
   created() {
     this.getShipments();
-  }
+  },
 };
 </script>
 

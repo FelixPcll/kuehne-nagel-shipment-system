@@ -24,7 +24,7 @@
             <router-link to="/" exact tag="li">Home</router-link>
             <router-link to="register" tag="li">Register</router-link>
             <router-link to="list" tag="li">List</router-link>
-            <router-link to="retrive" tag="li">Retrive</router-link>
+            <!-- <router-link to="retrive" tag="li">Retrive</router-link> -->
           </ul>
         </nav>
 
@@ -129,6 +129,3 @@ header {
   }
 }
 </style>
-
-
-

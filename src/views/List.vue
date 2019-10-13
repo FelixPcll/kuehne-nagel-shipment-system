@@ -21,13 +21,13 @@
 </template>
 
 <script>
-import ListItens from "@/components/ListItens.vue";
+import ListItens from '@/components/ListItens.vue';
 
 export default {
-  name: "list",
+  name: 'list',
   components: {
-    ListItens
-  }
+    ListItens,
+  },
 };
 </script>
 

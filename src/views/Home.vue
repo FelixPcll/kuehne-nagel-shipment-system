@@ -25,13 +25,13 @@
 
 <script>
 // @ is an alias to /src
-import CardInfo from "@/components/CardInfo.vue";
+import CardInfo from '@/components/CardInfo.vue';
 
 export default {
-  name: "home",
+  name: 'home',
   components: {
-    CardInfo
-  }
+    CardInfo,
+  },
 };
 </script>
 
