@@ -1,13 +1,7 @@
-import json
-
-from django.test import TestCase, Client
-from django.urls import reverse
+from django.test import  Client
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-from ..models import Shipment
-from ..serializer import ShipmentSerializer
 
 
 # initialize the APIClient app

@@ -5,7 +5,11 @@
         Register a New
         <span class="accent">Shipment</span>
       </h1>
-      <p>To <span class="accent">Create</span> a new shipment, just fill the form and press the <span class="accent">Register</span> button.</p>
+      <p>
+        To <span class="accent">Create</span> a new shipment,
+        just fill the form and press the
+        <span class="accent">Register</span> button.
+      </p>
     </div>
     <div class="fields">
       <ul>
@@ -55,8 +59,8 @@ export default {
           const data = response.data.actions.POST;
 
           Object.entries(data).forEach(([key, value]) => {
-            data[key].type = data[key].type == 'string' ? 'text' : data[key].type;
-            data[key].type = data[key].type == 'float' ? 'number' : data[key].type;
+            data[key].type = data[key].type === 'string' ? 'text' : data[key].type;
+            data[key].type = data[key].type === 'float' ? 'number' : data[key].type;
           });
 
           this.options = data;

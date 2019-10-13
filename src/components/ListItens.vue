@@ -105,7 +105,7 @@ export default {
             axios
               .delete(apiUrl)
               .then((response) => {
-                console.log(response);
+                // console.log(response);
                 this.getShipments();
                 setTimeout(
                   () => {

@@ -49,7 +49,6 @@ export default {
           .then((response) => {
             // console.log(response);
             this.item = response.data;
-            console.log(response);
           })
           .catch((e) => {
             console.log(e);
@@ -70,7 +69,7 @@ export default {
     },
 
     checkEnter() {
-      if (this.trackRef.length == 0) {
+      if (this.trackRef.length === 0) {
         return false;
       }
       return true;
